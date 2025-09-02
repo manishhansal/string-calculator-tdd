@@ -85,4 +85,44 @@ describe("String Calculator", () => {
     expect(() => calculator.add("8,9b")).toThrowError("Input must be a valid number");
   });
 
+  // 4. Multiple Numbers
+  it("should return the sum of multiple positive numbers", () => {
+    expect(calculator.add("1,2,3")).toBe(6);
+    expect(calculator.add("10,20,30,40")).toBe(100);
+    expect(calculator.add("5,10,15,20,25")).toBe(75);
+  });
+
+  it("should handle zeros among multiple numbers", () => {
+    expect(calculator.add("0,1,2")).toBe(3);
+    expect(calculator.add("0,0,0")).toBe(0);
+    expect(calculator.add("7,0,8")).toBe(15);
+  });
+
+  it("should ignore leading and trailing spaces for all numbers", () => {
+    expect(calculator.add(" 1 , 2 , 3 ")).toBe(6);
+    expect(calculator.add("  4,5, 6 ")).toBe(15);
+    expect(calculator.add("7 ,8 , 9 ")).toBe(24);
+  });
+
+  it("should throw an error if any number is negative", () => {
+    expect(() => calculator.add("1,-2,3")).toThrowError("negative numbers not allowed -2");
+    expect(() => calculator.add("-1,2,3")).toThrowError("negative numbers not allowed -1");
+    expect(() => calculator.add("1,2,-3")).toThrowError("negative numbers not allowed -3");
+    expect(() => calculator.add("1,-2,-3")).toThrowError("negative numbers not allowed -2,-3");
+    expect(() => calculator.add("-1,-2,-3")).toThrowError("negative numbers not allowed -1,-2,-3");
+  });
+
+  it("should throw an error for non-numeric input among multiple numbers", () => {
+    expect(() => calculator.add("1,2,a")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("b,2,3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,!,3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,2,3c")).toThrowError("Input must be a valid number");
+  });
+
+  it("should throw an error for empty values between commas", () => {
+    expect(() => calculator.add("1,,2")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add(",2,3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,2,")).toThrowError("Input must be a valid number");
+  });
+
 });
