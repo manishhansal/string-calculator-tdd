@@ -2,55 +2,69 @@ export class StringCalculator {
 
   add(numbers: string): number {
 
-    // Trim spaces
-    const trimmedString = numbers.trim();
+    if (!numbers.trim()) return 0;
 
-    // Base case: empty string
-    if (trimmedString === "") {
-      return 0;
+    let delimiterPattern = /,|\n/; // default delimiters
+
+    let input = numbers.trim();
+
+    // Handle custom delimiter syntax
+    if (input.startsWith("//")) {
+
+      const delimiterSectionEnd = input.indexOf("\n");
+
+      const delimiterSection = input.substring(2, delimiterSectionEnd);
+
+      input = input.substring(delimiterSectionEnd + 1);
+
+      // Multi-delimiter in [] syntax (can be multiple and multi-char)
+      const multipleDelimiters = [...delimiterSection.matchAll(/\[(.+?)\]/g)].map(m => m[1]);
+
+      if (multipleDelimiters.length > 0) {
+        // Escape regex special characters in delimiters
+        const escaped = multipleDelimiters.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+        delimiterPattern = new RegExp(escaped.join("|"));
+      } else {
+        // Single-character delimiter (no brackets)
+        const singleDelimiter = delimiterSection.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        delimiterPattern = new RegExp(singleDelimiter);
+      }
     }
 
-    // Check for empty values between delimiters (including mixed delimiters)
-    if (
-      /^[,\n\s]+/.test(trimmedString) || // starts with delimiter or spaces
-      /[,\n\s]+$/.test(trimmedString) || // ends with delimiter or spaces
-      /([,\n]\s*[,\n])/.test(trimmedString) // consecutive delimiters (with optional spaces)
-    ) {
-      throw new Error("Input must be a valid number");
+    // Split input into tokens
+    const tokens = input.split(delimiterPattern).map(t => t.trim());
+
+    // Validate tokens
+    const numbersList: number[] = [];
+    const negatives: number[] = [];
+
+    for (const token of tokens) {
+
+      if (token === "") {
+        throw new Error("Input must be a valid number");
+      }
+
+      const parsed = Number(token);
+
+      if (isNaN(parsed)) {
+        throw new Error("Input must be a valid number");
+      }
+
+      if (parsed < 0) {
+        negatives.push(parsed);
+      }
+
+      numbersList.push(parsed);
+
     }
 
-    // Replace all newlines with commas to unify delimiters
-    const unified = trimmedString.replace(/\n/g, ",");
+    // Handling negative integers
+    if (negatives.length > 0) {
 
-    // Split by comma for multiple numbers
-    const parts = unified.split(",").map(part => part.trim());
+      throw new Error("negative numbers not allowed " + negatives.join(","));
 
-    // Check for empty values between delimiters
-    if (parts.some(part => part === "")) {
-      throw new Error("Input must be a valid number");
     }
 
-    // Validate all numbers
-    const invalid = parts.some(part => !/^[-+]?\d+$/.test(part));
-
-    if (invalid) {
-      throw new Error("Input must be a valid number");
-    }
-
-    const nums = parts.map(part => parseInt(part, 10));
-
-    const negatives = nums.filter(n => n < 0);
-
-    if (negatives.length === 1) {
-      throw new Error(`negative numbers not allowed ${negatives[0]}`);
-    }
-
-    if (negatives.length > 1) {
-      throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
-    }
-
-    return nums.reduce((sum, n) => sum + n, 0);
-
+    return numbersList.reduce((sum, n) => sum + n, 0);
   }
-
-};
+}
