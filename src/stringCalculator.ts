@@ -54,7 +54,10 @@ export class StringCalculator {
         negatives.push(parsed);
       }
 
-      numbersList.push(parsed);
+      // Ignoring numbers > 1000
+      if (parsed <= 1000) {
+        numbersList.push(parsed);
+      }
 
     }
 
