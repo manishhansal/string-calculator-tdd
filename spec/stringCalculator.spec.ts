@@ -34,16 +34,9 @@ describe("String Calculator", () => {
   });
 
   it("should throw an error for non-numeric input", () => {
-    expect(() => calculator.add("abc")).toThrow("Input must be a valid number");
-    expect(() => calculator.add("!@#")).toThrow("Input must be a valid number");
-    expect(() => calculator.add("5a")).toThrow("Input must be a valid number");
-  });
-
-  it("should throw an error for null or undefined input", () => {
-    // @ts-ignore
-    expect(() => calculator.add(null)).toThrow("Input cannot be null or undefined");
-    // @ts-ignore
-    expect(() => calculator.add(undefined)).toThrow("Input cannot be null or undefined");
+    expect(() => calculator.add("abc")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("!@#")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("5a")).toThrowError("Input must be a valid number");
   });
 
 });

@@ -1,11 +1,6 @@
 export class StringCalculator {
 
   add(numbers: string): number {
-    
-    // Handle null or undefined
-    if (numbers === null || numbers === undefined) {
-      throw new Error("Input cannot be null or undefined");
-    }
 
     // Trim spaces
     const trimmed = numbers.trim();
