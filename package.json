@@ -1,0 +1,20 @@
+{
+  "name": "string-calculator-tdd",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine --config=jasmine.json",
+    "test:watch": "nodemon --watch spec --ext ts --exec \"npm test\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/jasmine": "^5.1.9",
+    "jasmine": "^5.10.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
