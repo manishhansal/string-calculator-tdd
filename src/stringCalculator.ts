@@ -10,47 +10,47 @@ export class StringCalculator {
       return 0;
     }
 
-    // Split by comma for multiple numbers
-    if (trimmedString.includes(",")) {
-      const parts = trimmedString.split(",").map(part => part.trim());
-
-      // Check for empty values between commas
-      if (parts.some(part => part === "")) {
-        throw new Error("Input must be a valid number");
-      }
-
-      // Validate all numbers
-      const invalid = parts.some(part => !/^[-+]?\d+$/.test(part));
-      if (invalid) {
-        throw new Error("Input must be a valid number");
-      }
-
-      const nums = parts.map(part => parseInt(part, 10));
-      const negatives = nums.filter(n => n < 0);
-
-      if (negatives.length === 1) {
-        throw new Error(`negative numbers not allowed ${negatives[0]}`);
-      }
-      if (negatives.length > 1) {
-        throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
-      }
-
-      return nums.reduce((sum, n) => sum + n, 0);
-    }
-
-    // Single number case
-    if (!/^[-+]?\d+$/.test(trimmedString)) {
+    // Check for empty values between delimiters (including mixed delimiters)
+    if (
+      /^[,\n\s]+/.test(trimmedString) || // starts with delimiter or spaces
+      /[,\n\s]+$/.test(trimmedString) || // ends with delimiter or spaces
+      /([,\n]\s*[,\n])/.test(trimmedString) // consecutive delimiters (with optional spaces)
+    ) {
       throw new Error("Input must be a valid number");
     }
 
-    const num = parseInt(trimmedString, 10);
+    // Replace all newlines with commas to unify delimiters
+    const unified = trimmedString.replace(/\n/g, ",");
 
-    // Negative number case
-    if (num < 0) {
-      throw new Error(`negative numbers not allowed ${num}`);
+    // Split by comma for multiple numbers
+    const parts = unified.split(",").map(part => part.trim());
+
+    // Check for empty values between delimiters
+    if (parts.some(part => part === "")) {
+      throw new Error("Input must be a valid number");
     }
 
-    return num;
+    // Validate all numbers
+    const invalid = parts.some(part => !/^[-+]?\d+$/.test(part));
+
+    if (invalid) {
+      throw new Error("Input must be a valid number");
+    }
+
+    const nums = parts.map(part => parseInt(part, 10));
+
+    const negatives = nums.filter(n => n < 0);
+
+    if (negatives.length === 1) {
+      throw new Error(`negative numbers not allowed ${negatives[0]}`);
+    }
+
+    if (negatives.length > 1) {
+      throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
+    }
+
+    return nums.reduce((sum, n) => sum + n, 0);
+
   }
 
 };
