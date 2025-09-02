@@ -125,4 +125,49 @@ describe("String Calculator", () => {
     expect(() => calculator.add("1,2,")).toThrowError("Input must be a valid number");
   });
 
+  // 5. Handle Newline Delimiters
+  it("should return the sum when numbers are separated by newlines", () => {
+    expect(calculator.add("1\n2")).toBe(3);
+    expect(calculator.add("10\n20")).toBe(30);
+    expect(calculator.add("5\n10\n15")).toBe(30);
+  });
+
+  it("should handle mixed commas and newlines as delimiters", () => {
+    expect(calculator.add("1,2\n3")).toBe(6);
+    expect(calculator.add("4\n5,6")).toBe(15);
+    expect(calculator.add("7,8\n9,10")).toBe(34);
+  });
+
+  it("should handle zeros with newlines", () => {
+    expect(calculator.add("0\n0")).toBe(0);
+    expect(calculator.add("0,1\n2")).toBe(3);
+  });
+
+  it("should ignore leading and trailing spaces with newlines", () => {
+    expect(calculator.add(" 1 \n 2 , 3 ")).toBe(6);
+    expect(calculator.add("  4\n5, 6 ")).toBe(15);
+    expect(calculator.add("7 ,8 \n 9 ")).toBe(24);
+  });
+
+  it("should throw an error if any number is negative with newlines", () => {
+    expect(() => calculator.add("1\n-2,3")).toThrowError("negative numbers not allowed -2");
+    expect(() => calculator.add("-1\n2,3")).toThrowError("negative numbers not allowed -1");
+    expect(() => calculator.add("1,2\n-3")).toThrowError("negative numbers not allowed -3");
+    expect(() => calculator.add("1,-2\n-3")).toThrowError("negative numbers not allowed -2,-3");
+    expect(() => calculator.add("-1\n-2\n-3")).toThrowError("negative numbers not allowed -1,-2,-3");
+  });
+
+  it("should throw an error for non-numeric input with newlines", () => {
+    expect(() => calculator.add("1\n2\na")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("b\n2,3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1\n!\n3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,2\n3c")).toThrowError("Input must be a valid number");
+  });
+
+  it("should throw an error for empty values between delimiters", () => {
+    expect(() => calculator.add("1\n\n2")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,2,\n")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("1,\n2")).toThrowError("Input must be a valid number");
+  });
+
 });
