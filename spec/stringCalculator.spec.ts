@@ -170,4 +170,74 @@ describe("String Calculator", () => {
     expect(() => calculator.add("1,\n2")).toThrowError("Input must be a valid number");
   });
 
+  // 6. Support different delimiters (Custom Delimiters)
+  it("should support custom single-character delimiter", () => {
+    expect(calculator.add("//;\n1;2")).toBe(3);
+    expect(calculator.add("//|\n4|5|6")).toBe(15);
+    expect(calculator.add("//-\n7-8-9")).toBe(24);
+  });
+
+  it("should support custom multi-character delimiter in brackets", () => {
+    expect(calculator.add("//[***]\n1***2***3")).toBe(6);
+    expect(calculator.add("//[abc]\n4abc5abc6")).toBe(15);
+    expect(calculator.add("//[--]\n7--8--9")).toBe(24);
+  });
+
+  it("should support custom delimiter with mixed whitespace", () => {
+    expect(calculator.add("//[***]\n 1 *** 2 *** 3 ")).toBe(6);
+    expect(calculator.add("//[;]\n 4 ; 5 ; 6 ")).toBe(15);
+  });
+
+  it("should throw an error for negative numbers with custom delimiter", () => {
+    expect(() => calculator.add("//;\n1;-2")).toThrowError("negative numbers not allowed -2");
+    expect(() => calculator.add("//[***]\n-1***-2***3")).toThrowError("negative numbers not allowed -1,-2");
+  });
+
+  it("should throw an error for non-numeric input with custom delimiter", () => {
+    expect(() => calculator.add("//;\n1;a")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[***]\n1***b***3")).toThrowError("Input must be a valid number");
+  });
+
+  it("should throw an error for empty values between custom delimiters", () => {
+    expect(() => calculator.add("//;\n1;;2")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[***]\n1*** ***2")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[abc]\nabc2abc3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[--]\n1--2--")).toThrowError("Input must be a valid number");
+  });
+
+  // 7. Support multiple custom delimiters
+  it("should support multiple custom single-character delimiters", () => {
+    expect(calculator.add("//[;][|]\n1;2|3")).toBe(6);
+    expect(calculator.add("//[;][,]\n4;5,6")).toBe(15);
+    expect(calculator.add("//[|][*]\n7|8*9")).toBe(24);
+  });
+
+  it("should support multiple custom multi-character delimiters", () => {
+    expect(calculator.add("//[***][%%]\n1***2%%3")).toBe(6);
+    expect(calculator.add("//[abc][--]\n4abc5--6")).toBe(15);
+    expect(calculator.add("//[##][@@]\n7##8@@9")).toBe(24);
+  });
+
+  it("should support multiple delimiters with mixed whitespace", () => {
+    expect(calculator.add("//[***][;]\n 1 *** 2 ; 3 ")).toBe(6);
+    expect(calculator.add("//[;][|]\n 4 ; 5 | 6 ")).toBe(15);
+  });
+
+  it("should throw an error for negative numbers with multiple custom delimiters", () => {
+    expect(() => calculator.add("//[;][|]\n1;-2|3")).toThrowError("negative numbers not allowed -2");
+    expect(() => calculator.add("//[***][%%]\n-1***-2%%3")).toThrowError("negative numbers not allowed -1,-2");
+  });
+
+  it("should throw an error for non-numeric input with multiple custom delimiters", () => {
+    expect(() => calculator.add("//[;][|]\n1;2|a")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[***][%%]\n1***b%%3")).toThrowError("Input must be a valid number");
+  });
+
+  it("should throw an error for empty values between multiple custom delimiters", () => {
+    expect(() => calculator.add("//[;][|]\n1;;2|3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[***][%%]\n1*** ***2%%3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[abc][--]\nabc2--3")).toThrowError("Input must be a valid number");
+    expect(() => calculator.add("//[##][@@]\n7##8@@")).toThrowError("Input must be a valid number");
+  });
+
 });
