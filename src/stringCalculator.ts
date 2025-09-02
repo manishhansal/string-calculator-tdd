@@ -3,16 +3,16 @@ export class StringCalculator {
   add(numbers: string): number {
 
     // Trim spaces
-    const trimmed = numbers.trim();
+    const trimmedString = numbers.trim();
 
     // Base case: empty string
-    if (trimmed === "") {
+    if (trimmedString === "") {
       return 0;
     }
 
     // Check for two numbers separated by comma
-    if (trimmed.includes(",")) {
-      const parts = trimmed.split(",").map(part => part.trim());
+    if (trimmedString.includes(",")) {
+      const parts = trimmedString.split(",").map(part => part.trim());
       if (parts.length !== 2) {
         throw new Error("Input must be one or two numbers separated by a comma");
       }
@@ -37,11 +37,11 @@ export class StringCalculator {
     }
 
     // Single number case
-    if (!/^[-+]?\d+$/.test(trimmed)) {
+    if (!/^[-+]?\d+$/.test(trimmedString)) {
       throw new Error("Input must be a valid number");
     }
 
-    const num = parseInt(trimmed, 10);
+    const num = parseInt(trimmedString, 10);
 
     // Negative number case
     if (num < 0) {
