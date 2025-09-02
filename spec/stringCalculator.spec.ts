@@ -240,4 +240,49 @@ describe("String Calculator", () => {
     expect(() => calculator.add("//[##][@@]\n7##8@@")).toThrowError("Input must be a valid number");
   });
 
+  // 8. Ignore numbers greater than 1000
+  it("should return the number itself if single number is <= 1000", () => {
+    expect(calculator.add("1000")).toBe(1000);
+    expect(calculator.add("999")).toBe(999);
+    expect(calculator.add("1")).toBe(1);
+  });
+
+  it("should ignore a single number greater than 1000", () => {
+    expect(calculator.add("1001")).toBe(0);
+    expect(calculator.add("5000")).toBe(0);
+    expect(calculator.add("999999")).toBe(0);
+  });
+
+  it("should ignore numbers greater than 1000 when mixed with smaller numbers", () => {
+    expect(calculator.add("2,1001")).toBe(2);
+    expect(calculator.add("1001,2")).toBe(2);
+    expect(calculator.add("5,1000,1001")).toBe(1005);
+    expect(calculator.add("500,600,1001")).toBe(1100);
+  });
+
+  it("should ignore numbers greater than 1000 with newlines as delimiters", () => {
+    expect(calculator.add("2\n1001")).toBe(2);
+    expect(calculator.add("1001\n2\n3")).toBe(5);
+  });
+
+  it("should ignore numbers greater than 1000 with custom delimiter", () => {
+    expect(calculator.add("//;\n2;1001")).toBe(2);
+    expect(calculator.add("//[***]\n1001***3***4")).toBe(7);
+  });
+
+  it("should handle multiple numbers with some > 1000", () => {
+    expect(calculator.add("1001,1002,5,6,1003,7")).toBe(18);
+    expect(calculator.add("//[***]\n1***2000***3***4000***5")).toBe(9);
+  });
+
+  it("should return 0 if all numbers are greater than 1000", () => {
+    expect(calculator.add("1001,2000,3000")).toBe(0);
+    expect(calculator.add("//;\n5001;9999")).toBe(0);
+  });
+
+  it("should throw error for negative numbers even if they are > 1000", () => {
+    expect(() => calculator.add("2,-1001")).toThrowError("negative numbers not allowed -1001");
+    expect(() => calculator.add("-2000,3")).toThrowError("negative numbers not allowed -2000");
+  });
+
 });
