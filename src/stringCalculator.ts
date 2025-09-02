@@ -10,14 +10,16 @@ export class StringCalculator {
       return 0;
     }
 
-    // Check for two numbers separated by comma
+    // Split by comma for multiple numbers
     if (trimmedString.includes(",")) {
       const parts = trimmedString.split(",").map(part => part.trim());
-      if (parts.length !== 2) {
-        throw new Error("Input must be one or two numbers separated by a comma");
+
+      // Check for empty values between commas
+      if (parts.some(part => part === "")) {
+        throw new Error("Input must be a valid number");
       }
 
-      // Validate both numbers
+      // Validate all numbers
       const invalid = parts.some(part => !/^[-+]?\d+$/.test(part));
       if (invalid) {
         throw new Error("Input must be a valid number");
@@ -29,11 +31,11 @@ export class StringCalculator {
       if (negatives.length === 1) {
         throw new Error(`negative numbers not allowed ${negatives[0]}`);
       }
-      if (negatives.length === 2) {
-        throw new Error(`negative numbers not allowed ${negatives[0]},${negatives[1]}`);
+      if (negatives.length > 1) {
+        throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
       }
 
-      return nums[0] + nums[1];
+      return nums.reduce((sum, n) => sum + n, 0);
     }
 
     // Single number case
